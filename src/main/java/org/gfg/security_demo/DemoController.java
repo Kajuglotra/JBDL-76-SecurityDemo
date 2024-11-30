@@ -1,6 +1,10 @@
 package org.gfg.security_demo;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,5 +33,16 @@ public class DemoController {
     @GetMapping("/demo")
     public String demo(){
         return "demo";
+    }
+
+    @PostMapping("/developer/{name}")
+    public String developerByName(@PathVariable String name, @AuthenticationPrincipal MyUser myUser){
+//        MyUser myUser = (MyUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "hey !!" + myUser.getUsername();
+    }
+
+    @PostMapping("/addAdmin")
+    public String addAdmin(){
+        return "abc";
     }
 }

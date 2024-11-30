@@ -22,23 +22,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class SecurityConfig{
 
-    @Bean
-    JdbcUserDetailsManager users(DataSource dataSource) {
-        UserDetails developer = User.builder()
-                .username("developer")
-                .password("$2a$10$PVeAPzqdZgSuLPBLklttdewPcurZk69Pr5vmf9HVDrx8gAp6PGYY6")
-                .roles("DEVELOPER")
-                .build();
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password("$2a$10$mrKQj1.6gSRoFG/srSazrOKwnv7LKIRm5CMMoxh.zmsVSaU3aM08a")
-                .roles("ADMIN")
-                .build();
-        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-        users.createUser(developer);
-        users.createUser(admin);
-        return users;
-    }
+//    @Bean
+//    JdbcUserDetailsManager users(DataSource dataSource) {
+//        UserDetails developer = User.builder()
+//                .username("developer")
+//                .password("$2a$10$PVeAPzqdZgSuLPBLklttdewPcurZk69Pr5vmf9HVDrx8gAp6PGYY6")
+//                .authorities("DEVELOPER")
+//                .build();
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password("$2a$10$mrKQj1.6gSRoFG/srSazrOKwnv7LKIRm5CMMoxh.zmsVSaU3aM08a")
+//                .authorities("ADMIN")
+//                .build();
+//        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+//        users.createUser(developer);
+//        users.createUser(admin);
+//        return users;
+//    }
 
     //    Authentication
 //    @Bean
@@ -60,13 +60,13 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/developer/**").hasRole("DEVELOPER")
+                        .requestMatchers("/developer/**").hasAuthority("DEVELOPER")
                         .requestMatchers("/home/**").permitAll()
-                        .requestMatchers("/tester/**").hasAnyRole("DEVELOPER", "ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/tester/**").hasAnyAuthority("DEVELOPER", "ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 ).formLogin(withDefaults())
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults()).csrf(csrf ->csrf.disable());
         return http.build();
     }
     @Bean
